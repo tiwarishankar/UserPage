@@ -76,12 +76,12 @@ class UserDetail(generics.RetrieveAPIView):
         data = Account.objects.filter(username=request.user.username).first()
         response = UserDataSerializer(data)
         return Response({"data":response.data})
-
 class EditUserProfile(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     serializer_class = UserEditInfoSerializer
-    def edit_user_info(self,request):
+    queryset = Account.objects.all()
+    def partial_update(self,request):
         response = UserEditInfoSerializer(data=request.data)
         if response.is_valid():
             response.save()
