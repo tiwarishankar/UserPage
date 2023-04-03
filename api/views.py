@@ -76,16 +76,15 @@ class UserDetail(generics.RetrieveAPIView):
         data = Account.objects.filter(username=request.user.username).first()
         response = UserDataSerializer(data)
         return Response({"data":response.data})
-class EditUserProfile(generics.UpdateAPIView):
+class EditUserProfile(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    serializer_class = UserEditInfoSerializer
-    queryset = Account.objects.all()
-    def partial_update(self,request):
-        response = UserEditInfoSerializer(data=request.data)
-        if response.is_valid():
-            response.save()
-            return Response(response.data)
-        else:
-            return Response(response.errors, status=HTTP_400_BAD_REQUEST)
+ 
+    def post(self, request, pk):
+        user = Account.objects.get(pk=pk)
+        serializer = UserEditInfoSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
