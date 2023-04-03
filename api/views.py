@@ -58,16 +58,7 @@ class UserSearchView(generics.ListAPIView):
     serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication]
     queryset = Account.objects.all()
-    # def get_queryset(self):
-    #     queryset = Account.objects.all()
-    #     username = self.request.query_params.get('username', None)
-    #     phone_number = self.request.query_params.get('phone_number', None)
-    #     email = self.request.query_params.get('email', None)
-    #     if username is not None:
-    #         queryset = queryset.filter(username=username)
-    #     if phone_number is not None:
-    #         queryset = queryset.filter(phone_number=phone_number)
-    #     return queryset
+    
     def list(self, request, query):
         data = self.get_queryset().filter(phone_number=query) | self.get_queryset().filter(email=query) | \
             self.get_queryset().filter(username=query)
